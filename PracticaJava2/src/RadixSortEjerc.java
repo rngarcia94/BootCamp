@@ -11,10 +11,12 @@ public class RadixSortEjerc
 		StringUtil.lNormalize(str,'0');
 
 		for (int p = 1;p <= l;p++) {
+			// creo las listas cada vuelta asi estan siempre vacias
 			List<String>[] listas = new ArrayList[rad];
 			for(int i = 0;i < listas.length; i++){
 				listas[i] = new ArrayList<String>();
 			}
+			//agrego a cada listo los valores del vector
 			for (int i = 0; i < str.length; i++) {
 				for (int j = 0; j < 10; j++) {
 					String aux = str[i];
@@ -26,6 +28,7 @@ public class RadixSortEjerc
 					}
 				}
 			}
+			//limpio el str y le agrego los valores de cada lista en orden
 			str = new String[str.length];
 			int acu = 0;
 			for (int i = 0; i < listas.length; i++) {
@@ -35,6 +38,7 @@ public class RadixSortEjerc
 				}
 			}
 		}
+		//los vuelvo a arr
 		int aux[] = new int[str.length];
 		aux = StringUtil.toIntArray(str);
 		for(int i = 0; i < arr.length; i++){
