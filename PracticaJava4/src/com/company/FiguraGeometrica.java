@@ -6,6 +6,6 @@ public abstract class FiguraGeometrica {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "Area de la figura:" + area();
     }
 }
