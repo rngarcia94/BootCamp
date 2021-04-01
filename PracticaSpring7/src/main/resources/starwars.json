@@ -134,7 +134,7 @@
   {
     "name": "Wilhuff Tarkin",
     "height": 180,
-    "mass": "NA",
+    "mass": 89,
     "hair_color": "auburn, grey",
     "skin_color": "fair",
     "eye_color": "blue",
@@ -182,7 +182,7 @@
   {
     "name": "Jabba Desilijic Tiure",
     "height": 175,
-    "mass": "1,358",
+    "mass": 1358,
     "hair_color": "NA",
     "skin_color": "green-tan, brown",
     "eye_color": "orange",
@@ -314,7 +314,7 @@
   {
     "name": "Mon Mothma",
     "height": 150,
-    "mass": "NA",
+    "mass": 120,
     "hair_color": "auburn",
     "skin_color": "fair",
     "eye_color": "blue",
@@ -325,8 +325,8 @@
   },
   {
     "name": "Arvel Crynyd",
-    "height": "NA",
-    "mass": "NA",
+    "height": 180,
+    "mass": 90,
     "hair_color": "brown",
     "skin_color": "fair",
     "eye_color": "brown",
@@ -386,7 +386,7 @@
   {
     "name": "Finis Valorum",
     "height": 170,
-    "mass": "NA",
+    "mass": 80,
     "hair_color": "blond",
     "skin_color": "fair",
     "eye_color": "blue",
