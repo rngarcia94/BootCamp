@@ -1,20 +1,19 @@
 package desafico.stock.desafiostock.Services;
 
-import desafico.stock.desafiostock.DTO.ArticleDTO;
-import desafico.stock.desafiostock.DTO.ArticlesFilterDTO;
+import desafico.stock.desafiostock.DTO.*;
+import desafico.stock.desafiostock.Exception.ApiException;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public interface ArticleService {
 
-    //Deprecado
-    List<ArticleDTO> getAll();
+    //filtra y ordena los articulos
+    List<ArticleDTO> getFilteredByTwo(ArticlesFilterDTO filterDTO) throws ApiException;
 
-    //Deprecado
-    List<ArticleDTO> getByFilter(String name);
+    // Se encarga de la creacion de la compra y de devolver una respuesta
+    ResponseDTO createPurchase(PurchaseOrderDTO purchaseOrderDTO) throws ApiException, IOException;
 
-    List<ArticleDTO> getFilteredByTwo(ArticlesFilterDTO filterDTO);
 
 
 }

@@ -9,13 +9,14 @@ import java.net.PortUnreachableException;
 @AllArgsConstructor
 public class ArticlesFilterDTO {
 
+    public Integer productId;
     public String name;
     public String category;
     public String brand;
-    public double price;
+    public Double price;
     public Boolean freeShipping;
-    public int prestige;
-    int order;
+    public Integer prestige;
+    public Integer order;
 
     public ArticlesFilterDTO(){}
 
