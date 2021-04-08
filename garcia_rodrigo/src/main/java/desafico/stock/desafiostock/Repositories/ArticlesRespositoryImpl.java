@@ -4,6 +4,7 @@ import desafico.stock.desafiostock.DTO.*;
 import desafico.stock.desafiostock.Exception.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -23,16 +24,26 @@ public class ArticlesRespositoryImpl implements ArticlesRepository{
         loadAll();
     }
 
+    //crea el path al archivo csv
+    private File loadFile(String fileName){
+        File file = new File("");
+        try {
+            file = ResourceUtils.getFile(file.getAbsolutePath()+ "/src/main/resources/" + fileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
     //carga todos los datos del csv a la lista
     @Override
     public void loadAll() throws ApiException {
-            String csvFile = "/Users/rodgarcia/Desktop/Bootcamp/garcia_rodrigo/src/main/resources/dbProductos.csv";
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ",";
         try {
             boolean firstline = true;
-            br = new BufferedReader(new FileReader(csvFile));
+            br = new BufferedReader(new FileReader(loadFile("dbProductos.csv")));
             while ((line = br.readLine()) != null){
                 if (!firstline) {
                     ArticleDTO articleDTO = new ArticleDTO();
@@ -64,6 +75,10 @@ public class ArticlesRespositoryImpl implements ArticlesRepository{
         }
     }
 
+    @Override
+    public List<ArticleDTO> getAll() {
+        return articles;
+    }
     //se encarga de realizar las comparaciones y devolver los articulos encotrados
     @Override
     public List<ArticleDTO> getFilteredByTwo(ArticlesFilterDTO filterDTO) throws ApiException {
@@ -113,7 +128,6 @@ public class ArticlesRespositoryImpl implements ArticlesRepository{
         if (articlesFound.size() == 0)
             throw new ApiException(HttpStatus.BAD_REQUEST,"No se Encontraron Articulos");
         else return articlesFound;
-
     }
 
     //actualiza los stock luego de realizada un compra, primero en memoria y luedo en el archivo
@@ -132,7 +146,7 @@ public class ArticlesRespositoryImpl implements ArticlesRepository{
 
     //Escribe en el archivo los cambios realizados en el stock
     public void saveDB(List<ArticleDTO> articles) throws IOException {
-        FileWriter writer = new FileWriter("/Users/rodgarcia/Desktop/Bootcamp/garcia_rodrigo/src/main/resources/dbProductos.csv");
+        FileWriter writer = new FileWriter(loadFile("dbProductos.csv"));
 
         String collect = "productId,name,category,brand,price,quantity,freeShipping;prestige\n";
         for(ArticleDTO article: articles) {
@@ -146,7 +160,6 @@ public class ArticlesRespositoryImpl implements ArticlesRepository{
                     + article.getQuantity() + ","
                     + f + ","
                     + "*".repeat(Math.max(0, article.getPrestige())) +  "\n";
-
         }
 
         writer.write(collect);

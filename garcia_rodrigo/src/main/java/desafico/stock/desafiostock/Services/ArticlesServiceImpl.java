@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class ArticlesServiceImpl implements ArticleService{
 
+    TicketDTO responseTicket = new TicketDTO();
     private int ticketId = 0;
     private ArticlesRepository articlesRepository;
     public ArticlesServiceImpl(ArticlesRepository articlesRepository){this.articlesRepository = articlesRepository;}
@@ -30,7 +31,7 @@ public class ArticlesServiceImpl implements ArticleService{
         if (filterDTO.getPrestige() != null) params++;
         if (filterDTO.getPrice() != null) params++;
         if (params < 3) {
-            //ordeno
+            //ordeno los productos antes de mostrarlos
             List<ArticleDTO> sortedList = articlesRepository.getFilteredByTwo(filterDTO);
             if(sortedList.size() == 0)
                 throw new ApiException(HttpStatus.BAD_REQUEST,"No se encontraron Articulos");
@@ -60,37 +61,56 @@ public class ArticlesServiceImpl implements ArticleService{
     // Se encarga de la creacion de la compra y de devolver una respuesta
     @Override
     public ResponseDTO createPurchase(PurchaseOrderDTO purchaseOrder) throws ApiException, IOException {
-        List<ArticlesForTicketDTO> articlesForTickets = purchaseOrder.getArticles();
-        if(articlesForTickets.size() == 0)
-            throw new ApiException(HttpStatus.BAD_REQUEST,"No ingreso articulos para comprar");
-        List<Integer> ids = articlesForTickets.stream().map(ArticlesForTicketDTO::getProductId).collect(Collectors.toList());
-        HashMap<Integer,ArticleDTO> articlesToPurchase = articlesRepository.getByID(ids);
-        if(articlesToPurchase.size() == 0)
-            throw new ApiException(HttpStatus.BAD_REQUEST,"No se encontraron articulos para comprar");
-
-        double total = 0;
-        List<Double> prices = new ArrayList<>();
-        for (Map.Entry<Integer,ArticleDTO> entry:articlesToPurchase.entrySet()) {
-                prices.add(entry.getValue().getPrice());
+        //Si no existe ticket anterior crea un nuevo
+        if (ticketId == 0) {
+            //valido la orden de compra
+            for (int i = 0; i < purchaseOrder.getArticles().size(); i++) {
+                validateArticle(purchaseOrder.getArticles().get(i),articlesRepository.getAll());
+            }
+            // Actualizo el stock para chequear que tengo stock disponible
+            articlesRepository.refreshStock(purchaseOrder);
+            //llamo al metodo encargado de crear el ticket
+            responseTicket = createTicket(purchaseOrder);
         }
-        for (int i = 0; i < prices.size(); i++) {
-            validateArticle(purchaseOrder.getArticles().get(i),articlesToPurchase);
-            total += purchaseOrder.getArticles().get(i).getQuantity() * prices.get(i);
+        // Si ya existe ticket lo actualiza con los nuevos productos
+        else {
+            //valido la orden de compra
+            for (int i = 0; i < purchaseOrder.getArticles().size(); i++) {
+                validateArticle(purchaseOrder.getArticles().get(i),articlesRepository.getAll());
+            }
+            // Actualizo el stock antes de comenzar para cheaquear que tengo stock disponible
+            articlesRepository.refreshStock(purchaseOrder);
+            //recorro el ticket para saber si el producto ya fue comprado si es asi sumo la nueva cantidad
+            for (int i = 0; i < responseTicket.getArticles().getArticles().size(); i++) {
+                boolean notFound = true;
+                for (int j = 0; j < purchaseOrder.getArticles().size(); j++) {
+                    if (purchaseOrder.getArticles().get(j).getProductId()
+                            == (responseTicket.getArticles().getArticles().get(i).getProductId())) {
+                        purchaseOrder.getArticles().get(j).setQuantity(purchaseOrder.getArticles().get(j).getQuantity()
+                                + responseTicket.getArticles().getArticles().get(i).getQuantity());
+                        notFound = false;
+                    }
+                }
+                // si el producto no fue comprado lo agrego al ticket
+                if (notFound){
+                    purchaseOrder.getArticles().add(responseTicket.getArticles().getArticles().get(i));
+                }
+            }
+            //llamo al metodo encargado de crear el ticket
+            responseTicket = createTicket(purchaseOrder);
         }
-        ticketId++;
-        TicketDTO responseTicket = new TicketDTO(ticketId,purchaseOrder,total);
+        //creo el status y se lo agrego a la compra
         StatusDTO responseStatus = new StatusDTO(200,"La solicitud de compra se completo con exito");
-        // Actualizo el stock
-        articlesRepository.refreshStock(purchaseOrder);
         return new ResponseDTO(responseTicket,responseStatus);
     }
 
     // Realiza las validaciones del proceso de compra
-    private void validateArticle(ArticlesForTicketDTO articleInTicket, HashMap<Integer,ArticleDTO> articles) throws ApiException{
+    private void validateArticle(ArticlesForTicketDTO articleInTicket, List<ArticleDTO> articles) throws ApiException{
         if (articleInTicket.getQuantity() == null || articleInTicket.getQuantity() == 0){
             throw new ApiException(HttpStatus.BAD_REQUEST,"Cantidad de Articulos Vacia " + articleInTicket.getName());
         }
-        ArticleDTO articleToCompare = articles.get(articleInTicket.getProductId());
+        //el -1 es pq las posiciones en el get comienza en 0 y los productId en 1
+        ArticleDTO articleToCompare = articles.get(articleInTicket.getProductId()-1);
         if(articleToCompare == null){
             throw new ApiException(HttpStatus.BAD_REQUEST,"No se encotro el Producto " + articleInTicket.getName());
         }
@@ -103,6 +123,39 @@ public class ArticlesServiceImpl implements ArticleService{
         if(articleInTicket.getQuantity() > articleToCompare.getQuantity()){
             throw new ApiException(HttpStatus.BAD_REQUEST,"Stock Insuficiente del Producto " + articleInTicket.getName());
         }
-
     }
+
+    //creo el ticket de compra con los porductos solicitados
+    private TicketDTO createTicket(PurchaseOrderDTO purchaseOrder) throws ApiException{
+        //creo un nuevo ticket para devolverlo
+        TicketDTO responseTicket = new TicketDTO();
+
+        //busco los informacion completa de los articulos que desean comprar
+        List<ArticlesForTicketDTO> articlesForTickets = purchaseOrder.getArticles();
+        if (articlesForTickets.size() == 0)
+            throw new ApiException(HttpStatus.BAD_REQUEST, "No ingreso articulos para comprar");
+        List<Integer> ids = articlesForTickets.stream().map(ArticlesForTicketDTO::getProductId).collect(Collectors.toList());
+        HashMap<Integer, ArticleDTO> articlesToPurchase = articlesRepository.getByID(ids);
+        if (articlesToPurchase.size() == 0)
+            throw new ApiException(HttpStatus.BAD_REQUEST, "No se encontraron articulos para comprar");
+
+        //recorro los articulos para obtener sus precios
+        double total = 0;
+        List<Double> prices = new ArrayList<>();
+        for (Map.Entry<Integer, ArticleDTO> entry : articlesToPurchase.entrySet()) {
+            prices.add(entry.getValue().getPrice());
+        }
+        //calculo el total del ticket
+        for (int i = 0; i < prices.size(); i++) {
+            total += purchaseOrder.getArticles().get(i).getQuantity()
+                    * articlesToPurchase.get(purchaseOrder.getArticles().get(i).getProductId()).getPrice();
+        }
+        //seteo los valores al ticket y lo retorno
+        ticketId++;
+        responseTicket.setId(ticketId);
+        responseTicket.setArticles(purchaseOrder);
+        responseTicket.setTotal(total);
+        return responseTicket;
+    }
+
 }

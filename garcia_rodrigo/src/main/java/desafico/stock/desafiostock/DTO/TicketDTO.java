@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @NoArgsConstructor
 public class TicketDTO {
 
-    int id;
+    Integer id;
     PurchaseOrderDTO articles;
     double total;
 

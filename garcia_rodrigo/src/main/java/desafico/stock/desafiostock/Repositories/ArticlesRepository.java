@@ -23,4 +23,7 @@ public interface ArticlesRepository {
     //actualiza los stock luego de realizada un compra
     void refreshStock(PurchaseOrderDTO purchaseOrderDTO) throws IOException;
 
+    //busca todos lo articulos
+    List<ArticleDTO> getAll();
+
 }

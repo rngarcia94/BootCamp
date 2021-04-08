@@ -20,11 +20,13 @@ public class StockController {
     @Autowired
     private ArticlesServiceImpl articlesService;
 
+    //busca y traelos los articulos fucniona con o sin filtros
     @GetMapping("/articles/")
     public ResponseEntity getFiltered(ArticlesFilterDTO filterDTO) throws ApiException {
         return new ResponseEntity(articlesService.getFilteredByTwo(filterDTO),HttpStatus.OK);
     }
 
+    //realiza la compra. Si envio varias peticiones seguida las suma todas en un mismo ticket y muestra el total
     @PostMapping("/purchase-request")
     public ResponseEntity purchase(@RequestBody PurchaseOrderDTO buyOrder) throws ApiException, IOException {
         return new ResponseEntity(articlesService.createPurchase(buyOrder),HttpStatus.OK);
