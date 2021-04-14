@@ -24,6 +24,10 @@ public class ArticlesRespositoryImpl implements ArticlesRepository{
         loadAll();
     }
 
+    public ArticlesRespositoryImpl(List<ArticleDTO> articles_) throws ApiException{
+        articles = articles_;
+    }
+
     //crea el path al archivo csv
     private File loadFile(String fileName){
         File file = new File("");
@@ -80,6 +84,7 @@ public class ArticlesRespositoryImpl implements ArticlesRepository{
         return articles;
     }
     //se encarga de realizar las comparaciones y devolver los articulos encotrados
+
     @Override
     public List<ArticleDTO> getFilteredByTwo(ArticlesFilterDTO filterDTO) throws ApiException {
         validateParams(filterDTO,articles);

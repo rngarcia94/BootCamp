@@ -70,13 +70,13 @@ public class ClientesRepositoryImpl implements ClientesRepository{
                 }
             }
         }
-        if(clientesDTO.getName() == null){
+        if(clientesDTO.getName() == null || clientesDTO.getName().equals("")){
             throw new ApiException(HttpStatus.BAD_REQUEST,"No ingreso Nombre");
         }
-        if(clientesDTO.getLastName() == null){
+        if(clientesDTO.getLastName() == null || clientesDTO.getLastName().equals("")){
             throw new ApiException(HttpStatus.BAD_REQUEST,"No ingreso Apellido");
         }
-        if(clientesDTO.getState() == null){
+        if(clientesDTO.getState() == null || clientesDTO.getState().equals("")){
             throw new ApiException(HttpStatus.BAD_REQUEST,"No ingreso Provincia");
         }
     }
