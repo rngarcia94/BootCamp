@@ -1,0 +1,25 @@
+{
+  "userName" : "arjona@gmail.com",
+  "booking" : {
+    "dateFrom" : "15/02/2021",
+    "dateTo" : "18/02/2021",
+    "destination" : "Buenos Aires",
+    "hotelCode" : "HB-00",
+    "peopleAmount" : 1,
+    "roomType" : "Single",
+    "people" : [
+      {
+        "dni" : "123456789",
+        "name" : "juan",
+        "lastname" : "Gomez",
+        "birthDate" : "10/11/1984",
+        "mail" : "juan@gmail.com"
+      }
+    ],
+    "paymentMethod" : {
+      "type" : "CREDIT",
+      "number" : "4444-5555-6666-7777",
+      "dues" : 10
+    }
+  }
+}

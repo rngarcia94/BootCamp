@@ -1,0 +1,38 @@
+[
+  {
+    "flightNumber": "BOCA-4213",
+    "origin": "Bogotá",
+    "destination": "Cartagena",
+    "seatType": "Economy",
+    "price": 8000,
+    "dateFrom": "23/01/2021",
+    "dateTo": "05/02/2021"
+  },
+  {
+    "flightNumber": "CAME-0321",
+    "origin": "Cartagena",
+    "destination": "Medellín",
+    "seatType": "Economy",
+    "price": 7800,
+    "dateFrom": "23/01/2021",
+    "dateTo": "31/01/2021"
+  },
+  {
+    "flightNumber": "BOBA-6567",
+    "origin": "Bogotá",
+    "destination": "Buenos Aires",
+    "seatType": "Business",
+    "price": 57000,
+    "dateFrom": "15/02/2021",
+    "dateTo": "28/02/2021"
+  },
+  {
+    "flightNumber": "BOBA-6567",
+    "origin": "Bogotá",
+    "destination": "Buenos Aires",
+    "seatType": "Economy",
+    "price": 39860,
+    "dateFrom": "01/03/2021",
+    "dateTo": "14/03/2021"
+  }
+]

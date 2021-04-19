@@ -1,0 +1,26 @@
+{
+  "userName" : "arjona@gmail.com",
+  "flightReservation" : {
+    "dateFrom" : "15/02/2021",
+    "dateTo" : "10/02/2021",
+    "origin" : "Bogotá",
+    "destination" : "Buenos Aires",
+    "flightNumber": "BOBA-6567",
+    "seats" : 1,
+    "seatType" : "Business",
+    "people" : [
+      {
+        "dni" : "123456789",
+        "name" : "juan",
+        "lastname" : "Gomez",
+        "birthDate" : "10/11/1984",
+        "mail" : "juan@gmail.com"
+      }
+    ],
+    "paymentMethod" : {
+      "type" : "CREDIT",
+      "number" : "4444-5555-6666-7777",
+      "dues" : 10
+    }
+  }
+}
