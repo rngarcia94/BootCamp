@@ -2,6 +2,8 @@ API Developed by Garcia, Rodrigo Nahuel for MeLi's Bootcamp second challenge.
 
 The entire API works with just one controller.
 
+The request are key sensitive and some use accents marks.
+
 The code have comments explaining each method.
 
 All the important clases reach 100% method coverage and more than 90% line coverage, except validationUtils(81%) and FileUtils(72%).
