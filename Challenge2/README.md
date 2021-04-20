@@ -11,8 +11,10 @@ All the important clases reach 100% method coverage and more than 90% line cover
 Here are some payload for testing.
 
 001-Get All Hotels: http://localhost:8080/api/v1/hotels/
+This method shows the entire database booked and not booked hotels. (I did it this way because i find usefull a method for showing everything).
 
 002-Get Filtered Hotels: http://localhost:8080/api/v1/hotels/?dateFrom=10/02/2021&dateTo=19/03/2021&destination=Buenos Aires
+This method only show not booked rooms. This is a better method to find an especfic room based on the need of the client.
 
 003-Book Room: http://localhost:8080/api/v1/booking
 
